@@ -1,11 +1,5 @@
 package by.it.group410972.kazyukevich.lesson01;
 
-/*
- * Даны целые числа 1<=n<=1E18 и 2<=m<=1E5,
- * необходимо найти остаток от деления n-го числа Фибоначчи на m
- * время расчета должно быть не более 2 секунд
- */
-
 public class FiboC {
 
     private long startTime = System.currentTimeMillis();
@@ -22,36 +16,44 @@ public class FiboC {
     }
 
     long fasterC(long n, int m) {
-        if (n <= 1) return n % m;
-
-        // Вычисляем период Пизано
         int pisanoPeriod = getPisanoPeriod(m);
 
-        // Уменьшаем n с учетом периода Пизано
-        n = n % pisanoPeriod;
+        long k = n % pisanoPeriod;
 
-        // Вычисляем n-е число Фибоначчи по модулю m
-        long prev = 0, curr = 1;
-        for (int i = 2; i <= n; i++) {
-            long temp = (prev + curr) % m;
-            prev = curr;
-            curr = temp;
-        }
-        return curr;
+        return fibonacciMod(k, m);
     }
 
     private int getPisanoPeriod(int m) {
-        long prev = 0, curr = 1;
-        for (int i = 0; i < m * m; i++) {
-            long temp = (prev + curr) % m;
+        long prev = 0;
+        long curr = 1;
+        int period = 0;
+
+        while (true) {
+            long next = (prev + curr) % m;
             prev = curr;
-            curr = temp;
+            curr = next;
+            period++;
+
             if (prev == 0 && curr == 1) {
-                return i + 1;
+                return period;
             }
         }
-        return m;
     }
 
-}
+    private long fibonacciMod(long k, int m) {
+        if (k <= 1) {
+            return k % m;
+        }
 
+        long prev = 0;
+        long curr = 1;
+
+        for (long i = 2; i <= k; i++) {
+            long next = (prev + curr) % m;
+            prev = curr;
+            curr = next;
+        }
+
+        return curr;
+    }
+}
